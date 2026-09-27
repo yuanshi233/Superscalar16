@@ -1,0 +1,16 @@
+set clk=0 reset=1 write_enable=0 data=0
+cycle clk 1
+set reset=0 write_enable=1 data=1
+cycle clk 1
+set data=2
+cycle clk 1
+set data=3
+cycle clk 1
+expect column0=1 column1=2 column2=3 column3=0
+set write_enable=0 data=255
+cycle clk 2
+expect column0=1 column1=2 column2=3 column3=0
+set reset=1
+cycle clk 1
+expect column0=0 column1=0 column2=0 column3=0
+trace

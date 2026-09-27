@@ -1,0 +1,4 @@
+NOTE native bounds are measured after drawing at 1:1; labels/tunnel text are included where the component exposes them. Intersections are bounding-box candidates, not exact-pixel collisions. Wires and touching edges are excluded.
+AUDIT circuit="CPU_Core" components=1636 wires=1894 bounds=(85,21): 5570x25680 overlaps=0 body_overlaps=0 label_extended=76 involved=0
+PNG file="D:\\demo\\������\\tools\\layout-io-qc-cpu.png" width=1092 height=5000 scale=0.194341 viewport=(61,-3): 5618x25728
+TOTAL circuits=1 overlaps=0 body_overlaps=0

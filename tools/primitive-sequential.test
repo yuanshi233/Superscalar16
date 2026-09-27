@@ -1,0 +1,13 @@
+set clk=0 rst=1 en=0 data=0xbeef
+cycle clk
+expect q=0 init_q=0x1234
+set rst=0 en=1
+cycle clk
+expect q=0xbeef init_q=0xbeef
+set en=0 data=0x7654
+cycle clk
+expect q=0xbeef init_q=0xbeef
+set rst=1
+expect q=0 init_q=0xbeef
+cycle clk
+expect q=0 init_q=0x1234

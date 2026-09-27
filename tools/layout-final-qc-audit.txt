@@ -1,0 +1,20 @@
+NOTE native bounds are measured after drawing at 1:1; labels/tunnel text are included where the component exposes them. Intersections are bounding-box candidates, not exact-pixel collisions. Wires and touching edges are excluded.
+AUDIT circuit="Superscalar16" components=134 wires=88 bounds=(57,21): 1707x1540 overlaps=0 body_overlaps=0 label_extended=35 involved=0
+PNG file="D:\\demo\\������\\tools\\layout-final-qc-dashboard.png" width=1755 height=1588 scale=1.000000 viewport=(33,-3): 1755x1588
+AUDIT circuit="CPU_Core" components=1636 wires=1894 bounds=(85,21): 5570x25680 overlaps=0 body_overlaps=0 label_extended=76 involved=0
+AUDIT circuit="DecodeOne" components=402 wires=513 bounds=(96,21): 5526x6820 overlaps=0 body_overlaps=0 label_extended=15 involved=0
+AUDIT circuit="BTB64" components=2361 wires=3360 bounds=(96,21): 5526x36060 overlaps=0 body_overlaps=0 label_extended=76 involved=0
+AUDIT circuit="InstructionMemory" components=22 wires=15 bounds=(96,21): 5770x679 overlaps=0 body_overlaps=0 label_extended=3 involved=0
+AUDIT circuit="FetchFIFO8" components=558 wires=730 bounds=(96,21): 5563x8420 overlaps=0 body_overlaps=0 label_extended=45 involved=0
+AUDIT circuit="FetchUnit" components=157 wires=143 bounds=(96,21): 5528x2090 overlaps=0 body_overlaps=0 label_extended=26 involved=0
+AUDIT circuit="RS_Entry" components=442 wires=586 bounds=(96,21): 5534x5800 overlaps=0 body_overlaps=0 label_extended=39 involved=0
+AUDIT circuit="ROB_Entry" components=279 wires=343 bounds=(96,21): 5562x3080 overlaps=0 body_overlaps=0 label_extended=46 involved=0
+AUDIT circuit="ROB" components=2260 wires=2824 bounds=(96,21): 5538x34210 overlaps=0 body_overlaps=0 label_extended=61 involved=0
+AUDIT circuit="ALU_RS" components=2343 wires=2697 bounds=(96,21): 5557x33370 overlaps=0 body_overlaps=0 label_extended=49 involved=0
+AUDIT circuit="LS_RS" components=2319 wires=2681 bounds=(96,21): 5557x32810 overlaps=0 body_overlaps=0 label_extended=49 involved=0
+AUDIT circuit="ALU" components=226 wires=275 bounds=(96,21): 5519x3610 overlaps=0 body_overlaps=0 label_extended=10 involved=0
+AUDIT circuit="PhysicalRegister" components=186 wires=226 bounds=(96,21): 5517x2240 overlaps=0 body_overlaps=0 label_extended=25 involved=0
+AUDIT circuit="Rename_PRF" components=11874 wires=16380 bounds=(86,21): 5610x187940 overlaps=0 body_overlaps=0 label_extended=136 involved=0
+AUDIT circuit="StoreBuffer" components=1270 wires=1592 bounds=(96,21): 5535x20690 overlaps=0 body_overlaps=0 label_extended=35 involved=0
+AUDIT circuit="DataMemory" components=106 wires=122 bounds=(85,21): 5523x1573 overlaps=0 body_overlaps=0 label_extended=15 involved=0
+TOTAL circuits=17 overlaps=0 body_overlaps=0

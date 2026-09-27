@@ -1,0 +1,9 @@
+set clk=0 clean=1 data=0
+cycle clk 1
+set clean=0 data=1
+cycle clk 1
+set data=2
+cycle clk 1
+set data=3
+cycle clk 1
+trace

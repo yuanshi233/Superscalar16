@@ -1,0 +1,6 @@
+# The top-level circuit now generates its own one-cycle power-on reset.
+# No manual reset pulse is required before starting SystemClock.
+set reset=0 pause=0
+cycle @internal 230
+expect r1=0xf000 r2=5 r3=8
+trace

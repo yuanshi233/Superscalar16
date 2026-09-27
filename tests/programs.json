@@ -1,0 +1,1669 @@
+{
+  "schema": 1,
+  "pc_semantics": "word-addressed; fall-through pc+1; BEQ/BNE/JAL pc+1+signed immediate; JALR rs1+signed immediate",
+  "programs": [
+    {
+      "name": "basic_isa_lane_mix",
+      "assembly": "ADDI r1,r0,5\nADDI r2,r0,3\nADD r3,r1,r2\nSUB r4,r1,r2\nAND r5,r1,r2\nOR r6,r1,r2\nXOR r7,r1,r2\nHALT\n",
+      "words": [
+        29189,
+        29699,
+        5712,
+        10320,
+        14928,
+        19536,
+        24144,
+        61440
+      ],
+      "hex_words": [
+        "7205",
+        "7403",
+        "1650",
+        "2850",
+        "3a50",
+        "4c50",
+        "5e50",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          5,
+          3,
+          8,
+          2,
+          1,
+          7,
+          6
+        ],
+        "memory": {},
+        "retired": 8,
+        "halted": true,
+        "architectural_next_pc": 8
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "r0_and_same_pair_raw_waw",
+      "assembly": "ADDI r0,r0,17\nADDI r1,r0,4\nADDI r2,r1,3\nADDI r2,r2,5\nADD r3,r2,r1\nHALT\n",
+      "words": [
+        28689,
+        29188,
+        29763,
+        29829,
+        5768,
+        61440
+      ],
+      "hex_words": [
+        "7011",
+        "7204",
+        "7443",
+        "7485",
+        "1688",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          4,
+          12,
+          16,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {},
+        "retired": 6,
+        "halted": true,
+        "architectural_next_pc": 6
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "prior_cycle_raw_chain",
+      "assembly": "ADDI r1,r0,1\nADDI r2,r1,2\nADD r3,r2,r1\nSUB r4,r3,r2\nXOR r5,r4,r1\nHALT\n",
+      "words": [
+        29185,
+        29762,
+        5768,
+        10448,
+        23304,
+        61440
+      ],
+      "hex_words": [
+        "7201",
+        "7442",
+        "1688",
+        "28d0",
+        "5b08",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          1,
+          3,
+          4,
+          1,
+          0,
+          0,
+          0
+        ],
+        "memory": {},
+        "retired": 6,
+        "halted": true,
+        "architectural_next_pc": 6
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "load_store_forward_order",
+      "assembly": "ADDI r1,r0,5\nADDI r2,r0,11\nSW r2,0(r1)\nLW r3,0(r1)\nADDI r2,r2,2\nSW r2,0(r1)\nLW r4,0(r1)\nHALT\n",
+      "words": [
+        29189,
+        29707,
+        37504,
+        34368,
+        29826,
+        37504,
+        34880,
+        61440
+      ],
+      "hex_words": [
+        "7205",
+        "740b",
+        "9280",
+        "8640",
+        "7482",
+        "9280",
+        "8840",
+        "f000"
+      ],
+      "memory_probes": [
+        5
+      ],
+      "expected": {
+        "registers": [
+          0,
+          5,
+          13,
+          11,
+          13,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "5": 13
+        },
+        "retired": 8,
+        "halted": true,
+        "architectural_next_pc": 8
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "branch_wrong_path_store_halt",
+      "assembly": "ADDI r1,r0,1\nBEQ r1,r1,taken\nSW r1,7(r0)\nHALT\ntaken: ADDI r2,r0,9\nLW r3,7(r0)\nHALT\n",
+      "words": [
+        29185,
+        41538,
+        36935,
+        61440,
+        29705,
+        34311,
+        61440
+      ],
+      "hex_words": [
+        "7201",
+        "a242",
+        "9047",
+        "f000",
+        "7409",
+        "8607",
+        "f000"
+      ],
+      "memory_probes": [
+        7
+      ],
+      "expected": {
+        "registers": [
+          0,
+          1,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "7": 0
+        },
+        "retired": 5,
+        "halted": true,
+        "architectural_next_pc": 7
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "branch_in_second_lane_and_loop",
+      "assembly": "ADDI r1,r0,0\nADDI r2,r0,7\nloop: ADDI r1,r1,1\nBNE r1,r2,loop\nSW r1,3(r0)\nHALT\n",
+      "words": [
+        29184,
+        29703,
+        29249,
+        45758,
+        36931,
+        61440
+      ],
+      "hex_words": [
+        "7200",
+        "7407",
+        "7241",
+        "b2be",
+        "9043",
+        "f000"
+      ],
+      "memory_probes": [
+        3
+      ],
+      "expected": {
+        "registers": [
+          0,
+          7,
+          7,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "3": 7
+        },
+        "retired": 18,
+        "halted": true,
+        "architectural_next_pc": 6
+      },
+      "max_cycles": 740,
+      "controls": []
+    },
+    {
+      "name": "signed_slt_slti",
+      "assembly": "ADDI r1,r0,-1\nADDI r2,r0,1\nSLT r3,r1,r2\nSLT r4,r2,r1\nSLTI r5,r1,0\nSLTI r6,r2,-1\nHALT\n",
+      "words": [
+        29247,
+        29697,
+        26192,
+        26760,
+        59968,
+        60607,
+        61440
+      ],
+      "hex_words": [
+        "723f",
+        "7401",
+        "6650",
+        "6888",
+        "ea40",
+        "ecbf",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          65535,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "memory": {},
+        "retired": 7,
+        "halted": true,
+        "architectural_next_pc": 7
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "jal_lane0",
+      "assembly": "JAL r1,target\nADDI r7,r0,31\nADDI r7,r0,30\ntarget: ADDI r2,r1,4\nHALT\n",
+      "words": [
+        49666,
+        32287,
+        32286,
+        29764,
+        61440
+      ],
+      "hex_words": [
+        "c202",
+        "7e1f",
+        "7e1e",
+        "7444",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          1,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {},
+        "retired": 3,
+        "halted": true,
+        "architectural_next_pc": 5
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "jal_lane1_and_jalr",
+      "assembly": "ADDI r6,r0,1\nJAL r1,target\nADDI r7,r0,31\nADDI r7,r0,30\ntarget: ADDI r2,r0,8\nJALR r3,r2,0\nADDI r7,r0,29\nADDI r7,r0,28\nADDI r4,r3,2\nHALT\n",
+      "words": [
+        31745,
+        49666,
+        32287,
+        32286,
+        29704,
+        54912,
+        32285,
+        32284,
+        30914,
+        61440
+      ],
+      "hex_words": [
+        "7c01",
+        "c202",
+        "7e1f",
+        "7e1e",
+        "7408",
+        "d680",
+        "7e1d",
+        "7e1c",
+        "78c2",
+        "f000"
+      ],
+      "memory_probes": [],
+      "expected": {
+        "registers": [
+          0,
+          2,
+          8,
+          6,
+          8,
+          0,
+          1,
+          0
+        ],
+        "memory": {},
+        "retired": 6,
+        "halted": true,
+        "architectural_next_pc": 10
+      },
+      "max_cycles": 500,
+      "controls": []
+    },
+    {
+      "name": "sn_wrap_300_retired",
+      "assembly": "ADDI r1,r0,0\nADDI r2,r0,30\nouter: ADDI r3,r0,10\ninner: ADDI r1,r1,1\nADDI r3,r3,-1\nBNE r3,r0,inner\nADDI r2,r2,-1\nBNE r2,r0,outer\nSW r1,1(r0)\nHALT\n",
+      "words": [
+        29184,
+        29726,
+        30218,
+        29249,
+        30463,
+        46653,
+        29887,
+        46138,
+        36929,
+        61440
+      ],
+      "hex_words": [
+        "7200",
+        "741e",
+        "760a",
+        "7241",
+        "76ff",
+        "b63d",
+        "74bf",
+        "b43a",
+        "9041",
+        "f000"
+      ],
+      "memory_probes": [
+        1
+      ],
+      "expected": {
+        "registers": [
+          0,
+          300,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "1": 300
+        },
+        "retired": 994,
+        "halted": true,
+        "architectural_next_pc": 10
+      },
+      "max_cycles": 30020,
+      "controls": []
+    },
+    {
+      "name": "branch_even_wrong_path",
+      "assembly": "ADDI r1,r0,1\nADDI r2,r0,9\nBEQ r1,r1,target\nSW r2,0(r0)\nHALT\nADDI r3,r0,-1\ntarget: ADDI r3,r0,7\nBNE r1,r0,finish\nSW r2,1(r0)\nHALT\nfinish: SW r3,2(r0)\nHALT\n",
+      "words": [
+        29185,
+        29705,
+        41539,
+        36992,
+        61440,
+        30271,
+        30215,
+        45570,
+        36993,
+        61440,
+        37058,
+        61440
+      ],
+      "hex_words": [
+        "7201",
+        "7409",
+        "a243",
+        "9080",
+        "f000",
+        "763f",
+        "7607",
+        "b202",
+        "9081",
+        "f000",
+        "90c2",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        1,
+        2
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          1,
+          9,
+          7,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 0,
+          "1": 0,
+          "2": 7
+        },
+        "retired": 7,
+        "halted": true,
+        "architectural_next_pc": 12
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "branch_not_taken_both_lanes",
+      "assembly": "ADDI r1,r0,1\nADDI r2,r0,2\nBEQ r1,r2,poison\nBNE r1,r1,poison\nADDI r3,r0,13\nBEQ r1,r0,poison\nBNE r0,r0,poison\nHALT\npoison: SW r1,9(r0)\nHALT\n",
+      "words": [
+        29185,
+        29698,
+        41605,
+        45636,
+        30221,
+        41474,
+        45057,
+        61440,
+        36937,
+        61440
+      ],
+      "hex_words": [
+        "7201",
+        "7402",
+        "a285",
+        "b244",
+        "760d",
+        "a202",
+        "b001",
+        "f000",
+        "9049",
+        "f000"
+      ],
+      "memory_probes": [
+        9
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          1,
+          2,
+          13,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "9": 0
+        },
+        "retired": 8,
+        "halted": true,
+        "architectural_next_pc": 8
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "jalr_source_destination_alias",
+      "assembly": "ADDI r1,r0,6\nADDI r2,r0,9\nJALR r1,r1,0\nSW r2,0(r0)\nHALT\nNOP\nADDI r3,r1,1\nJALR r4,r2,1\nHALT\nNOP\nADD r5,r4,r3\nHALT\n",
+      "words": [
+        29190,
+        29705,
+        53824,
+        36992,
+        61440,
+        0,
+        30273,
+        55425,
+        61440,
+        0,
+        6936,
+        61440
+      ],
+      "hex_words": [
+        "7206",
+        "7409",
+        "d240",
+        "9080",
+        "f000",
+        "0000",
+        "7641",
+        "d881",
+        "f000",
+        "0000",
+        "1b18",
+        "f000"
+      ],
+      "memory_probes": [
+        0
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          3,
+          9,
+          4,
+          8,
+          12,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 0
+        },
+        "retired": 7,
+        "halted": true,
+        "architectural_next_pc": 12
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "jalr_changing_prediction_target",
+      "assembly": "ADDI r1,r0,6\nJAL r7,dispatch\nHALT\nNOP\ndispatch: JALR r6,r1,0\nHALT\nADDI r1,r0,10\nJAL r0,dispatch\nHALT\nNOP\nADDI r2,r6,5\nSW r2,0(r0)\nHALT\n",
+      "words": [
+        29190,
+        52738,
+        61440,
+        0,
+        56384,
+        61440,
+        29194,
+        49660,
+        61440,
+        0,
+        30085,
+        36992,
+        61440
+      ],
+      "hex_words": [
+        "7206",
+        "ce02",
+        "f000",
+        "0000",
+        "dc40",
+        "f000",
+        "720a",
+        "c1fc",
+        "f000",
+        "0000",
+        "7585",
+        "9080",
+        "f000"
+      ],
+      "memory_probes": [
+        0
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          10,
+          10,
+          0,
+          0,
+          0,
+          5,
+          2
+        ],
+        "memory": {
+          "0": 10
+        },
+        "retired": 9,
+        "halted": true,
+        "architectural_next_pc": 13
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "two_memory_ops_same_pair",
+      "assembly": "ADDI r1,r0,11\nADDI r2,r0,22\nSW r1,0(r0)\nSW r2,1(r0)\nLW r3,0(r0)\nLW r4,1(r0)\nADD r5,r3,r4\nHALT\n",
+      "words": [
+        29195,
+        29718,
+        36928,
+        36993,
+        34304,
+        34817,
+        6880,
+        61440
+      ],
+      "hex_words": [
+        "720b",
+        "7416",
+        "9040",
+        "9081",
+        "8600",
+        "8801",
+        "1ae0",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        1,
+        2
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          11,
+          22,
+          11,
+          22,
+          33,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 11,
+          "1": 22,
+          "2": 0
+        },
+        "retired": 8,
+        "halted": true,
+        "architectural_next_pc": 8
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "memory_offsets_and_address_wrap",
+      "assembly": "ADDI r1,r0,31\nADDI r2,r0,-1\nSW r1,0(r2)\nLW r3,0(r2)\nSW r3,1(r2)\nLW r4,1(r2)\nADD r5,r2,r2\nSW r5,-1(r2)\nLW r6,-1(r2)\nADDI r7,r0,9\nSW r7,3(r0)\nHALT\n",
+      "words": [
+        29215,
+        29759,
+        37952,
+        34432,
+        38081,
+        34945,
+        6800,
+        38271,
+        36031,
+        32265,
+        37315,
+        61440
+      ],
+      "hex_words": [
+        "721f",
+        "743f",
+        "9440",
+        "8680",
+        "94c1",
+        "8881",
+        "1a90",
+        "957f",
+        "8cbf",
+        "7e09",
+        "91c3",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        1,
+        2,
+        3,
+        65534,
+        65535
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          31,
+          65535,
+          31,
+          31,
+          65534,
+          65534,
+          9
+        ],
+        "memory": {
+          "0": 31,
+          "1": 0,
+          "2": 0,
+          "3": 9,
+          "65534": 65534,
+          "65535": 31
+        },
+        "retired": 12,
+        "halted": true,
+        "architectural_next_pc": 12
+      },
+      "max_cycles": 560
+    },
+    {
+      "name": "load_cannot_bypass_unresolved_store",
+      "assembly": "ADDI r1,r0,5\nSW r1,0(r0)\nLW r2,0(r0)\nADDI r3,r0,27\nSW r3,0(r2)\nLW r4,5(r0)\nHALT\n",
+      "words": [
+        29189,
+        36928,
+        33792,
+        30235,
+        38080,
+        34821,
+        61440
+      ],
+      "hex_words": [
+        "7205",
+        "9040",
+        "8400",
+        "761b",
+        "94c0",
+        "8805",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        5
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          5,
+          5,
+          27,
+          27,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 5,
+          "5": 27
+        },
+        "retired": 7,
+        "halted": true,
+        "architectural_next_pc": 7
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "branch_recovery_waw",
+      "assembly": "ADDI r1,r0,5\nADDI r2,r0,1\nSW r1,0(r0)\nLW r3,0(r0)\nBEQ r3,r1,target\nADDI r1,r0,20\nADDI r1,r1,1\nADDI r1,r1,1\nSW r1,1(r0)\nHALT\ntarget: ADD r4,r1,r3\nADDI r1,r1,2\nSW r1,2(r0)\nHALT\n",
+      "words": [
+        29189,
+        29697,
+        36928,
+        34304,
+        42565,
+        29204,
+        29249,
+        29249,
+        36929,
+        61440,
+        6232,
+        29250,
+        36930,
+        61440
+      ],
+      "hex_words": [
+        "7205",
+        "7401",
+        "9040",
+        "8600",
+        "a645",
+        "7214",
+        "7241",
+        "7241",
+        "9041",
+        "f000",
+        "1858",
+        "7242",
+        "9042",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        1,
+        2
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          7,
+          1,
+          5,
+          10,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 5,
+          "1": 0,
+          "2": 7
+        },
+        "retired": 9,
+        "halted": true,
+        "architectural_next_pc": 14
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "waw_free_list_pressure",
+      "assembly": "ADDI r1,r0,0\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADD r2,r1,r1\nHALT\n",
+      "words": [
+        29184,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        5192,
+        61440
+      ],
+      "hex_words": [
+        "7200",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "1448",
+        "f000"
+      ],
+      "memory_probes": [],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          100,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {},
+        "retired": 103,
+        "halted": true,
+        "architectural_next_pc": 103
+      },
+      "max_cycles": 3290
+    },
+    {
+      "name": "sn_wrap_with_memory",
+      "assembly": "ADDI r1,r0,3\nADDI r2,r0,0\nouter: ADDI r3,r0,31\ninner: ADDI r2,r2,1\nSW r2,0(r0)\nLW r4,0(r0)\nADDI r3,r3,-1\nBNE r3,r0,inner\nADDI r1,r1,-1\nBNE r1,r0,outer\nSW r4,1(r0)\nHALT\n",
+      "words": [
+        29187,
+        29696,
+        30239,
+        29825,
+        36992,
+        34816,
+        30463,
+        46651,
+        29311,
+        45624,
+        37121,
+        61440
+      ],
+      "hex_words": [
+        "7203",
+        "7400",
+        "761f",
+        "7481",
+        "9080",
+        "8800",
+        "76ff",
+        "b63b",
+        "727f",
+        "b238",
+        "9101",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        1,
+        2
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          0,
+          93,
+          0,
+          93,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 93,
+          "1": 93,
+          "2": 0
+        },
+        "retired": 478,
+        "halted": true,
+        "architectural_next_pc": 12
+      },
+      "max_cycles": 14540
+    },
+    {
+      "name": "signed_overflow_boundaries",
+      "assembly": "ADDI r1,r0,1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\nADD r1,r1,r1\n\nADDI r2,r1,-1\nSLT r3,r1,r2\nSUB r4,r1,r2\nSLTI r5,r1,-32\nADDI r6,r2,1\nADD r7,r1,r6\nHALT\n",
+      "words": [
+        29185,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        4680,
+        29823,
+        26192,
+        10320,
+        60000,
+        31873,
+        7792,
+        61440
+      ],
+      "hex_words": [
+        "7201",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "1248",
+        "747f",
+        "6650",
+        "2850",
+        "ea60",
+        "7c81",
+        "1e70",
+        "f000"
+      ],
+      "memory_probes": [],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          32768,
+          32767,
+          1,
+          1,
+          1,
+          32768,
+          0
+        ],
+        "memory": {},
+        "retired": 23,
+        "halted": true,
+        "architectural_next_pc": 23
+      },
+      "max_cycles": 890
+    },
+    {
+      "name": "halt_lane0_suppresses_younger_store",
+      "assembly": "ADDI r1,r0,7\nADDI r2,r0,11\nHALT\nSW r2,0(r0)\nADDI r1,r0,-1\n",
+      "words": [
+        29191,
+        29707,
+        61440,
+        36992,
+        29247
+      ],
+      "hex_words": [
+        "7207",
+        "740b",
+        "f000",
+        "9080",
+        "723f"
+      ],
+      "memory_probes": [
+        0
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          7,
+          11,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 0
+        },
+        "retired": 3,
+        "halted": true,
+        "architectural_next_pc": 3
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "halt_lane1_suppresses_younger_store",
+      "assembly": "ADDI r1,r0,7\nHALT\nSW r1,0(r0)\nADDI r1,r0,-1\n",
+      "words": [
+        29191,
+        61440,
+        36928,
+        29247
+      ],
+      "hex_words": [
+        "7207",
+        "f000",
+        "9040",
+        "723f"
+      ],
+      "memory_probes": [
+        0
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          7,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 0
+        },
+        "retired": 2,
+        "halted": true,
+        "architectural_next_pc": 2
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "zero_register_load_and_jump",
+      "assembly": "ADDI r0,r0,31\nADDI r1,r0,5\nADD r0,r1,r1\nADDI r2,r0,7\nSW r1,0(r0)\nLW r0,0(r0)\nADDI r3,r0,9\nJAL r0,target\nHALT\ntarget: ADDI r4,r0,11\nHALT\n",
+      "words": [
+        28703,
+        29189,
+        4168,
+        29703,
+        36928,
+        32768,
+        30217,
+        49153,
+        61440,
+        30731,
+        61440
+      ],
+      "hex_words": [
+        "701f",
+        "7205",
+        "1048",
+        "7407",
+        "9040",
+        "8000",
+        "7609",
+        "c001",
+        "f000",
+        "780b",
+        "f000"
+      ],
+      "memory_probes": [
+        0
+      ],
+      "controls": [],
+      "expected": {
+        "registers": [
+          0,
+          5,
+          7,
+          9,
+          11,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 5
+        },
+        "retired": 10,
+        "halted": true,
+        "architectural_next_pc": 11
+      },
+      "max_cycles": 500
+    },
+    {
+      "name": "pause_resume",
+      "assembly": "ADDI r1,r0,0\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nADDI r1,r1,1\nSW r1,4(r0)\nLW r2,4(r0)\nHALT\n",
+      "words": [
+        29184,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        29249,
+        36932,
+        33796,
+        61440
+      ],
+      "hex_words": [
+        "7200",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "7241",
+        "9044",
+        "8404",
+        "f000"
+      ],
+      "memory_probes": [
+        4
+      ],
+      "controls": [
+        {
+          "cycle": 10,
+          "run": 0
+        },
+        {
+          "cycle": 18,
+          "run": 1
+        },
+        {
+          "cycle": 32,
+          "run": 0
+        },
+        {
+          "cycle": 39,
+          "run": 1
+        }
+      ],
+      "expected": {
+        "registers": [
+          0,
+          40,
+          40,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "4": 40
+        },
+        "retired": 44,
+        "halted": true,
+        "architectural_next_pc": 44
+      },
+      "max_cycles": 1520
+    },
+    {
+      "name": "reset_restart",
+      "assembly": "ADDI r1,r0,0\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nADDI r1,r1,1\nSW r1,4(r0)\nLW r2,4(r0)\nHALT\n",
+      "words": [
+        29184,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        29249,
+        36932,
+        33796,
+        61440
+      ],
+      "hex_words": [
+        "7200",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "7241",
+        "9044",
+        "8404",
+        "f000"
+      ],
+      "memory_probes": [
+        0,
+        4
+      ],
+      "controls": [
+        {
+          "cycle": 18,
+          "rst": 1
+        },
+        {
+          "cycle": 20,
+          "rst": 0
+        }
+      ],
+      "expected": {
+        "registers": [
+          0,
+          25,
+          25,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory": {
+          "0": 0,
+          "4": 25
+        },
+        "retired": 53,
+        "halted": true,
+        "architectural_next_pc": 53
+      },
+      "max_cycles": 1790
+    }
+  ],
+  "control_semantics": "controls are applied before rising edges of zero-based post-initial-reset cycles; unspecified run/rst values persist; initial run=1,rst=0. Pause must preserve architectural state. A later reset restarts program and counters."
+}

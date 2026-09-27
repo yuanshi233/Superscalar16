@@ -1,0 +1,15 @@
+set clk=0 rst=1 commit=0 read_addr=0 debug_addr=0 write_addr=0 write_data=0
+cycle clk
+expect data=0 debug_data=0
+set rst=0 commit=1 read_addr=5 debug_addr=7 write_addr=0x1234 write_data=0xbeef
+expect data=0 debug_data=0
+cycle clk
+expect data=0xbeef debug_data=0xbeef
+set commit=0 read_addr=0x1234 debug_addr=0x1234 write_addr=7 write_data=0xdead
+expect data=0xbeef debug_data=0xbeef
+cycle clk
+expect data=0xbeef debug_data=0xbeef
+set read_addr=7 debug_addr=5
+expect data=0 debug_data=0
+set rst=1 read_addr=0x1234 debug_addr=0x1234
+expect data=0 debug_data=0
